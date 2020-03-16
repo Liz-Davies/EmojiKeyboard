@@ -59,7 +59,7 @@ const ROWS_CONFIG_EN = [
 
 class EmojiKey extends React.Component{
     render(){
-        const {emoji,key_mapping,clickAction} = this.props;
+        const {key_mapping,clickAction} = this.props;
         return <button className='emoji-key' onClick={(e)=>clickAction(e,key_mapping)}><span className='emoji-char'>{EN_KEY_MAP[key_mapping]}</span><span className='key-reminder'>{key_mapping}</span></button>
     }
 }
@@ -88,30 +88,49 @@ export class EmojiKeyboard extends React.Component{
             password_val:""
         }
     }
-    clickAction(e,key){
-        e.preventDefault();
-        this.actionRecord.push({
+	logKey(event_name,key){
+		let new_action = {
             time:new Date(),
-            action:"button_click",
+            action:event_name,
             target:key,
             alias:EN_KEY_MAP[key]
-        });
+        }
+		console.log(new_action)
+		this.actionRecord.push(new_action);
+	}
+    clickAction(e,key){
+        e.preventDefault();
+		this.logKey('button_click',key)
         let {password_val} = this.state;
         this.setState({password_val:password_val+key})
     }
-    keyPress(e){
-        let key = e.target.value.charAt(e.target.value.length-1)
-        this.actionRecord.push({
-            time:new Date(),
-            action:"key_press",
-            target:key,
-            alias:EN_KEY_MAP[key]
-        });
+	inputEntry(e){
+		let {password_val} = this.state;
+		let key = e.target.value.charAt(e.target.value.length-1)
+		this.logKey('input_change',key)
         this.setState({password_val:e.target.value})
-        console.log(this.actionRecord[this.actionRecord.length-1]);
+	}
+    keyDown(e){
+		//handle key presses that are made while working with the keyboard
+		let key = e.key.toLowerCase();//account for accidental capslock
+		let {password_val} = this.state;
+		if("backspace" === key){
+			this.setState({password_val:password_val.slice(0,password_val.length-1)})
+		}else if("enter"===key){
+			this.submitAction()
+		}else if(key in EN_KEY_MAP){
+			this.logKey("key_press",key)
+			this.setState({password_val:password_val+key})
+		}else{
+			this.setState({password_val:password_val})
+		}
+
+
     }
     submitAction(e){
-        e.preventDefault();
+		if(e){
+			e.preventDefault();
+		}
         this.actionRecord.push({
             time:new Date(),
             action:"submit"
@@ -125,16 +144,22 @@ export class EmojiKeyboard extends React.Component{
         //fail add fail to actionRecord
     }
     render(){
-        let rendered_rows = ROWS_CONFIG_EN.map((row,index)=><EmojiKeyRow key={index} onKeyPress={this.keyPress.bind(this)} clickAction={this.clickAction.bind(this)} keys={row}/>);
+        let rendered_rows = ROWS_CONFIG_EN.map((row,index)=><EmojiKeyRow key={index} clickAction={this.clickAction.bind(this)} keys={row}/>);
         return (
             <div>
                 <div className="form-row">
-                    <input className="text-input" type="password" id="emoji-pass-field" onChange={this.keyPress.bind(this)} value={this.state.password_val}/>
-                    <button className="form-submit" type="submit">Submit</button>
+                    <label htmlFor="#emoji-pass-field">Password</label>
+					<input className="text-input"
+						type="password"
+						id="emoji-pass-field"
+						autoComplete="off"
+						onChange={this.inputEntry.bind(this)}
+						value={this.state.password_val}/>
                 </div>
-                <div className="keyboard-en emoji-keyboard">
+                <div className="keyboard-en emoji-keyboard" onKeyDown={this.keyDown.bind(this)}>
                     {rendered_rows}
                 </div>
+				<button className="form-submit" onSubmit={this.submitAction} type="submit">Submit</button>
             </div>
         );
     }

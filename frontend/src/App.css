@@ -27,8 +27,12 @@ input{
     padding:5px;
     color:white;
 }
+.form-row {
+    margin:5px;
+}
 .form-row > *{
     margin-right:5px;
+
 }
 
 
