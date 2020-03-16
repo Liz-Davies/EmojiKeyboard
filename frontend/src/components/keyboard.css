@@ -1,0 +1,45 @@
+
+.emoji-keyboard{
+    border:1px solid grey;
+    padding:5px;
+    margin-top: 5px;
+}
+.emoji-keyboard-row{
+
+}
+
+.keyboard-en > .emoji-keyboard-row:nth-child(2){
+    margin-left:20px;
+}
+.keyboard-en > .emoji-keyboard-row:nth-child(3){
+    margin-left:35px;
+}
+.keyboard-en > .emoji-keyboard-row:nth-child(4){
+    margin-left:50px;
+}
+.emoji-key{
+    position:relative;
+    width:45px;
+    height:45px;
+    background-color: #a7bfbf;
+    border:1px solid #a7bfbf;
+    margin:2px;
+    border-radius: 3px;
+}
+.emoji-key > .emoji-char{
+    font-size: 20px;
+}
+.emoji-key > .key-reminder{
+    font-size: 12px;
+    position:absolute;
+    right:3px;
+    bottom:3px;
+}
+.emoji-key:hover{
+    background-color:#cfdcdc;
+    border: 1px solid #cfdcdc;
+}
+.emoji-key:active,.emoji-key.pressed{
+    background-color: #cfdcdc;
+    border:1px solid #a7bfbf;
+}
