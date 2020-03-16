@@ -1,6 +1,13 @@
+
 .container{
-    margin-left: 10%;
-    margin-right:20%;
+    margin-left: 20px;
+    margin-right:20px;
+}
+@media (min-width: 1024px){
+    .container{
+        margin-left: 10%;
+        margin-right:20%;
+    }
 }
 .row{
     margin-right:-15px;
@@ -8,11 +15,27 @@
     margin-top:10px;
 }
 
+input{
+    padding:5px;
+    border-radius: 3px;
+    border:1px solid #0e2638;
+}
+.form-submit{
+    background-color:  #0e2638;
+    border-radius: 3px;
+    border:1px solid #0e2638;
+    padding:5px;
+    color:white;
+}
+.form-row > *{
+    margin-right:5px;
+}
 
 
 
 .App {
   text-align: center;
+
 }
 
 

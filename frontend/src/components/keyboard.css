@@ -1,11 +1,14 @@
 
 .emoji-keyboard{
-    border:1px solid grey;
+    border:1px solid #0e2638;
     padding:5px;
+    padding-bottom:15px;
     margin-top: 5px;
+    border-radius: 3px;
 }
 .emoji-keyboard-row{
-
+    flex-wrap:nowrap;
+    display:flex;
 }
 
 .keyboard-en > .emoji-keyboard-row:nth-child(2){
@@ -19,21 +22,29 @@
 }
 .emoji-key{
     position:relative;
-    width:45px;
-    height:45px;
+    width:35px;
+    height:35px;
+    min-width:35px;
+    min-height:35px;
     background-color: #a7bfbf;
     border:1px solid #a7bfbf;
     margin:2px;
     border-radius: 3px;
 }
 .emoji-key > .emoji-char{
-    font-size: 20px;
+    font-size: 16px;
+    position:absolute;
+    top:3px;
+    left:3px;
+    bottom:3px;
+    right:3px;
 }
 .emoji-key > .key-reminder{
     font-size: 12px;
     position:absolute;
     right:3px;
     bottom:3px;
+    display:none;
 }
 .emoji-key:hover{
     background-color:#cfdcdc;
@@ -42,4 +53,22 @@
 .emoji-key:active,.emoji-key.pressed{
     background-color: #cfdcdc;
     border:1px solid #a7bfbf;
+}
+
+@media (min-width: 650px){
+    .emoji-key{
+        width:45px;
+        height:45px;
+        min-width:45px;
+        min-height:45px;
+        top:5px;
+        left:5px;
+        right:5px;
+    }
+    .emoji-key > .emoji-char{
+        font-size: 150%;
+    }
+    .emoji-key > .key-reminder{
+        display:inline-block;
+    }
 }
