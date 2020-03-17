@@ -4,7 +4,7 @@
     padding:5px;
     padding-bottom:15px;
     margin-top: 5px;
-    border-radius: 3px;
+    border-radius: 7px;
 }
 .emoji-keyboard-row{
     flex-wrap:nowrap;
@@ -54,6 +54,28 @@
     background-color: #cfdcdc;
     border:1px solid #a7bfbf;
 }
+
+.new-emoji-pass-field{
+    border:1px solid #a7bfbf;
+    border-radius:7px;
+    padding:15px;
+    margin-bottom:45px;
+    display:flex;
+    justify-content: space-around;
+}
+.new-emoji-pass-field > * {
+    display:flex;
+}
+.new-emoji-pass{
+    padding:5px;
+    font-size:35px;
+}
+
+.new-emoji-pass-field > .button-row{
+    float:right;
+}
+
+
 
 @media (min-width: 650px){
     .emoji-key{

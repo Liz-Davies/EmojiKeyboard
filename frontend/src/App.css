@@ -20,13 +20,34 @@ input{
     border-radius: 3px;
     border:1px solid #0e2638;
 }
-.form-submit{
+.btn{
     background-color:  #0e2638;
     border-radius: 3px;
     border:1px solid #0e2638;
     padding:5px;
     color:white;
 }
+.btn:disabled{
+    background:#405a6d;
+    color:#0e2638;
+}
+.btn-lrg{
+    font-size:16px;
+    padding:10px;
+}
+.btn-danger{
+    background-color:#7b1717;
+    border-color:#7b1717;
+}
+.btn-danger:disabled{
+    background:#b18080;
+    border-color:#7b1717;
+    color:#7b1717;
+}
+.button-row > button{
+    margin:3px;
+}
+
 .form-row {
     margin:5px;
 }
