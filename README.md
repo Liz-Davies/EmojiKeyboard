@@ -2,7 +2,6 @@
 EmojiKeyboard
 
 # Event data format
-##JSON Event data (as is currently)
 ###JSON current
 {  
     time: [Date],  
@@ -15,8 +14,7 @@ EmojiKeyboard
     ?  
 }  
 ### Existing CSV
-"Date",",UID","Website","?","PicId?","Event_State","Event","Data"
-Where  
+"Date",",UID","Website","?","PicId?","Event_State","Event","Data"  
 Date: Time in seconds from 1970  
 UID: The user id of the test subject  
 ?:?  
@@ -24,22 +22,29 @@ PicId?:Id for the picture
 Event Category: create | enter | reset | login  
 Event: start | picChange | picAccept | Password  
 
-Events
-|*create*|start|picChange|picAccept|Password|order inputPwd|goodPractice|hidePassword|PwdDisplay|badPractice|showPassword|createClear|help|
-|*enter*|start|order inputPwd|goodLogin|badLogin|enterClear|||||||
-|*reset*|resetdone|resetask||||||||||
-|*login*|success|failure||||||||||
+###Events
+|-|-|-|-|-|-|-|-|-|-|-|-|
+|**create**|start|picChange|picAccept|Password|order inputPwd|goodPractice|hidePassword|PwdDisplay|badPractice|showPassword|createClear|help|
+|**enter**|start|order inputPwd|goodLogin|badLogin|enterClear|||||||
+|**reset**|resetdone|resetask||||||||||
+|**login**|success|failure||||||||||
+
+### CSV goal
+"date"?
 
 
 # Emoji Library
 ## Suggestions by team mate
-|Ben |🌵🌶️🍒👾🤖🐞🐖🍺🧦|
+|-|-|
+|Ben |🌵🌶️🍒👾🤖🐞🐖🍺🧦|  
 |Essam |🍻❄️🎃🎱💎👑🌲🌙💨🍦☕🎿🗿🎬🥊|
 |Jacy |🐶🔥🌧️⚽☄️🌧️🚗🌻🎵|
 |Liz |🌸🚀🍉💡🦄🔑🎀🥇💌👁️🤟|
 |good extras |♣️♦️♠️♥️🐱|
 
 ## Suggestions by topic
+|Topic|Emojis|
+|-|-|
 |travel | 🌵🚗🗿|
 |sport | 🎱⚽🎿🥊🥇|
 |animals | 🦄🐶🐞🐖🐱|
