@@ -7,7 +7,7 @@ by: A Funny Name
 ```JSON
 {  
     "time": "[Date]",  
-    "action":"[start | submit | passAccept | passRegen ]",
+    "action":"[start | submit | passAccept | passRegen | key_input | input_change | button_click ]",
     "target":"[key]",  
     "alias":"[emoji]"
 }  
@@ -27,9 +27,9 @@ PicId?:Id for the picture
 Event Category: create | enter | reset | login  
 Event: start | picChange | picAccept | Password  
 
-### Events
+### Existing Events
 |Events Category|Events||||||||||||
-|---|---|---|---|---|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
 |**create**|start|picChange|picAccept|Password|order inputPwd|goodPractice|hidePassword|PwdDisplay|badPractice|showPassword|createClear|help|
 |**enter**|start|order inputPwd|goodLogin|badLogin|enterClear||||||||
 |**reset**|resetdone|resetask|||||||||||
