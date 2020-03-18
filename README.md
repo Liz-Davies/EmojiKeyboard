@@ -2,7 +2,7 @@
 EmojiKeyboard
 by: A Funny Name
 
-# Event data format
+# Event data format(s)
 ### JSON current
 ```JSON
 {  
@@ -28,7 +28,7 @@ Event Category: create | enter | reset | login
 Event: start | picChange | picAccept | Password  
 
 ### Events
-|Events Category|Events|
+|Events Category|Events||||||||||||
 |---|---|---|---|---|---|---|---|---|---|---|---|
 |**create**|start|picChange|picAccept|Password|order inputPwd|goodPractice|hidePassword|PwdDisplay|badPractice|showPassword|createClear|help|
 |**enter**|start|order inputPwd|goodLogin|badLogin|enterClear||||||||
