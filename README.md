@@ -1,18 +1,23 @@
 # EmojiKeyboard
 EmojiKeyboard
+by: A Funny Name
 
 # Event data format
-###JSON current
+### JSON current
+```JSON
 {  
-    time: [Date],  
-    action:[start | submit | passAccept | passRegen ]  
-    target:[key],  
-    alias:[emoji]  
+    "time": "[Date]",  
+    "action":"[start | submit | passAccept | passRegen ]",
+    "target":"[key]",  
+    "alias":"[emoji]"
 }  
-###JSON goal
+```
+### JSON goal  
+```JSON
 {  
-    ?  
+    "?":"?"
 }  
+```
 ### Existing CSV
 "Date",",UID","Website","?","PicId?","Event_State","Event","Data"  
 Date: Time in seconds from 1970  
@@ -22,12 +27,13 @@ PicId?:Id for the picture
 Event Category: create | enter | reset | login  
 Event: start | picChange | picAccept | Password  
 
-###Events
-|-|-|-|-|-|-|-|-|-|-|-|-|
+### Events
+|Events Category|Events|
+|---|---|---|---|---|---|---|---|---|---|---|---|
 |**create**|start|picChange|picAccept|Password|order inputPwd|goodPractice|hidePassword|PwdDisplay|badPractice|showPassword|createClear|help|
-|**enter**|start|order inputPwd|goodLogin|badLogin|enterClear|||||||
-|**reset**|resetdone|resetask||||||||||
-|**login**|success|failure||||||||||
+|**enter**|start|order inputPwd|goodLogin|badLogin|enterClear||||||||
+|**reset**|resetdone|resetask|||||||||||
+|**login**|success|failure||||||||||||
 
 ### CSV goal
 "date"?
@@ -35,6 +41,7 @@ Event: start | picChange | picAccept | Password
 
 # Emoji Library
 ## Suggestions by team mate
+|||
 |-|-|
 |Ben |🌵🌶️🍒👾🤖🐞🐖🍺🧦|  
 |Essam |🍻❄️🎃🎱💎👑🌲🌙💨🍦☕🎿🗿🎬🥊|
