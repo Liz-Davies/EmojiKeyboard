@@ -4,7 +4,7 @@
     margin-right:20px;
 }
 @media (min-width: 1024px){
-    .container{
+    body > .container, body > div#root > .container{
         margin-left: 10%;
         margin-right:20%;
     }
@@ -20,19 +20,70 @@ input{
     border-radius: 3px;
     border:1px solid #0e2638;
 }
-.form-submit{
+.form{
+    border:1px solid #a7bfbf;
+    border-radius:7px;
+    padding:8px;
+}
+.form-title{
+    margin-block-end: -5px;
+    padding: 0px 10px;
+}
+.btn{
     background-color:  #0e2638;
     border-radius: 3px;
     border:1px solid #0e2638;
     padding:5px;
     color:white;
 }
+.btn:disabled{
+    background:#405a6d;
+    color:#0e2638;
+}
+.btn-lrg{
+    font-size:16px;
+    padding:10px;
+}
+.btn-danger{
+    background-color:#7b1717;
+    border-color:#7b1717;
+}
+.btn-danger:disabled{
+    background:#b18080;
+    border-color:#7b1717;
+    color:#7b1717;
+}
+.button-row > button{
+    margin-right:3px;
+}
+.in-field-button{
+    background:transparent;
+    border:none;
+}
+
 .form-row {
-    margin:5px;
+    margin:10px;
 }
 .form-row > *{
     margin-right:5px;
-
+}
+.form-cluster{
+    padding: 8px;
+    margin: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    border: 2px solid #0e2638;
+    position:relative;
+}
+.form-cluster> label{
+    position: absolute;
+    padding:0px 4px;
+    top: -14px;
+    left: 10px;
+    background-color: white;
+}
+.form-cluster>input{
+    border:none;
 }
 
 
@@ -54,7 +105,9 @@ input{
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+.hidden{
+    display:none;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

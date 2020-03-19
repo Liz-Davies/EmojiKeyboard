@@ -4,7 +4,7 @@
     padding:5px;
     padding-bottom:15px;
     margin-top: 5px;
-    border-radius: 3px;
+    border-radius: 7px;
 }
 .emoji-keyboard-row{
     flex-wrap:nowrap;
@@ -28,6 +28,7 @@
     min-height:35px;
     background-color: #a7bfbf;
     border:1px solid #a7bfbf;
+    box-shadow: 1px 2px 1px 1px  #0e2638;
     margin:2px;
     border-radius: 3px;
 }
@@ -51,9 +52,32 @@
     border: 1px solid #cfdcdc;
 }
 .emoji-key:active,.emoji-key.pressed{
-    background-color: #cfdcdc;
+    background-color:  #0e2638;
     border:1px solid #a7bfbf;
+    color:#a7bfbf;
 }
+
+.new-emoji-pass-field{
+    border:1px solid #0e2638;
+    border-radius:7px;
+    padding:15px;
+    margin-bottom:45px;
+    display:flex;
+    justify-content: space-around;
+}
+.new-emoji-pass-field > * {
+    display:flex;
+}
+.new-emoji-pass{
+    padding:5px;
+    font-size:35px;
+}
+
+.new-emoji-pass-field > .button-row{
+    float:right;
+}
+
+
 
 @media (min-width: 650px){
     .emoji-key{
