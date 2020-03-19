@@ -65,7 +65,12 @@ function convertToEmoji(str){
 class EmojiKey extends React.Component{
     render(){
         const {key_mapping,clickAction} = this.props;
-        return <button className='emoji-key' onClick={(e)=>clickAction(e,key_mapping)}><span className='emoji-char'>{LANG_CONFIG_MAP[key_mapping]}</span><span className='key-reminder'>{key_mapping}</span></button>
+        return <button className='emoji-key'
+					onClick={(e)=>clickAction(e,key_mapping)}
+					type="button">
+						<span className='emoji-char'>{LANG_CONFIG_MAP[key_mapping]}</span>
+						<span className='key-reminder'>{key_mapping}</span>
+					</button>
     }
 }
 
@@ -90,7 +95,6 @@ export class EmojiKeyboard extends React.Component{
             time:new Date(),
             action:"page_open",
         })
-		var active_state={}
         this.state={
             val:"",
 			pass_visible:false
@@ -162,7 +166,7 @@ export class EmojiKeyboard extends React.Component{
             <div>
                 <div className="form-cluster">
                     <label htmlFor="#emoji-pass-field">Password</label>
-					<input className="text_input"
+					<input className="text-input emoji-field"
 						name="password"
 						type="password"
 						id={id}
@@ -170,7 +174,7 @@ export class EmojiKeyboard extends React.Component{
 						onChange={this.inputEntry.bind(this)}
 						value={val}
 						hidden={pass_visible}/>
-					<input className="text-input"
+					<input className="text-input emoji-field"
 						name="emoji_password"
 						type="text"
 						id={id+"-emoji"}

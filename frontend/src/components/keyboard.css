@@ -73,6 +73,10 @@
     font-size:35px;
 }
 
+input.emoji-field{
+  font-size:35px;
+}
+
 .new-emoji-pass-field > .button-row{
     float:right;
 }
