@@ -3,35 +3,35 @@ import './keyboard.css';
 // import LANG_CONFIG from './emoji-language-config.js'
 
 const LANG_CONFIG_MAP ={
-	"0": "🌻",
+	"0": "🍁",
 	"1": "🌵",
 	"2": "🚗",
 	"3": "🗿",
-	"4": "🥊",
+	"4": "🎲",
 	"5": "⚽",
 	"6": "🎿",
-	"7": "🐶",
+	"7": "🐧",
 	"8": "🐱",
 	"9": "🌸",
 	"-": "🎃",
 	"=": "🌲",
 	"q": "🍉",
-	"w": "🌶️",
+	"w": "🍍",
 	"e": "️🍒",
 	"r": "🎱",
-	"t": "🥇",
+	"t": "🏆",
 	"y": "🐞",
-	"u": "️🦄",
+	"u": "️🐼",
 	"i": "🐖",
 	"o": "💨",
-	"p": "🌧️",
+	"p": "☔️",
 	"[": "❄️",
 	"]": "🎀",
 	"a": "🍦",
 	"s": "🍺",
 	"d": "☕",
 	"f": "🎬",
-	"g": "📽️️",
+	"g": "🎥",
 	"h": "🎵",
 	"j": "👑",
 	"k": "💎",
@@ -43,12 +43,12 @@ const LANG_CONFIG_MAP ={
 	"x": "♦️",
 	"c": "♠️",
 	"v": "♥️",
-	"b": "👾",
-	"n": "🤖",
+	"b": "🌃",
+	"n": "🔭",
 	"m": "🚀",
 	",": "🌙",
-	".": "☄️",
-	"/": "🧦"
+	".": "🌠",
+	"/": "📫"
 }
 const LANG_CONFIG_ROWS = [
 		['1','2','3','4','5','6','7','8','9','0','-','='],
@@ -174,7 +174,7 @@ export class EmojiKeyboard extends React.Component{
 						onChange={this.inputEntry.bind(this)}
 						value={val}
 						hidden={pass_visible}/>
-					<input className="text-input emoji-field"
+					<input className="text-input emoji-text emoji-field"
 						name="emoji_password"
 						type="text"
 						id={id+"-emoji"}
@@ -183,9 +183,8 @@ export class EmojiKeyboard extends React.Component{
 						onChange={this.inputEntry.bind(this)}
 						value={convertToEmoji(val)}
 						hidden={!pass_visible}/>
-					<button className="in-field-button text-muted"
+					<button className="in-field-button emoji-text text-muted"
 						type="button"
-						role="reveal password"
 						onMouseLeave={this.hidePass.bind(this)}
 						onMouseEnter={this.revealPass.bind(this)}>👁</button>
                 </div>
@@ -236,10 +235,11 @@ export class EmojiPasswordGenerator extends React.Component{
 		console.log("render")
 		console.log(disabled)
 		return(<div id="new-emoji-pass-field">
-			<input hidden="true" name="password" value={curr_pass}/>
+			<input hidden={true} readOnly={true} name="password" value={curr_pass}/>
 			<div className="form-cluster">
 				<label htmlFor="new-emoji-pass">New Password</label>
-				<input className="new-emoji-pass"
+				<input className="emoji-field emoji-text"
+					id="new-emoji-pass"
 					name="emoji-password"
 					type={hidePassword ? "password" : "text"}
 					readOnly={true}

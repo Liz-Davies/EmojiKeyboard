@@ -1,6 +1,7 @@
 import React from 'react';
 import EmojiKeyboard, {EmojiPasswordGenerator} from './emoji-keyboard.js';
 //import EmojiPasswordGenerator from './components/emoji-string-generator.js'
+//eslint-disable-next-line
 const request_path = "0.0.0.0:8000/"
 
 export class FormSubmitResponse extends React.Component{
@@ -118,12 +119,13 @@ export class CreateAndPracticePage extends React.Component{
         const {practice} = this.state
         return(
             <div className="container">
-                <NewUserForm submitAction={this.submitNewUser.bind(this)} disabled={practice}/>
+                <NewUserForm submitAction={this.submitNewUser.bind(this)} disabled={practice}/>            
                 {practice?<PasswordForm id="password-form" title="Practice Login"/>:''}
             </div>
         )
     }
 }
+//eslint-disable-next-line
 export class LoginPage extends React.Component{
     render(){
         return(

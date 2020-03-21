@@ -12,9 +12,6 @@ function App(){
       <div id="create-page" className="tabbed-page">
         <CreateAndPracticePage/>
       </div>
-      <div id="login-page" className="tabbed-page hidden">
-        <LoginPage/>
-      </div>
     </div>
   );
 

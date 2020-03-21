@@ -1,3 +1,7 @@
+@font-face{
+	font-family:'EmojiFont';
+	src:url('./fonts/NotoEmoji-Regular.ttf') format('truetype');
+}
 
 .emoji-keyboard{
     border:1px solid #0e2638;
@@ -28,17 +32,20 @@
     min-height:35px;
     background-color: #a7bfbf;
     border:1px solid #a7bfbf;
-    box-shadow: 1px 2px 1px 1px  #0e2638;
+    box-shadow: 1px 2px 0px 1px #0e2638;
     margin:2px;
     border-radius: 3px;
 }
 .emoji-key > .emoji-char{
+    font-family:EmojiFont;
     font-size: 16px;
     position:absolute;
     top:3px;
     left:3px;
     bottom:3px;
     right:3px;
+		color: #0e2638;
+
 }
 .emoji-key > .key-reminder{
     font-size: 12px;
@@ -68,13 +75,13 @@
 .new-emoji-pass-field > * {
     display:flex;
 }
-.new-emoji-pass{
-    padding:5px;
-    font-size:35px;
+.emoji-text{
+  font-family:EmojiFont;
 }
 
 input.emoji-field{
   font-size:35px;
+	width:200px;
 }
 
 .new-emoji-pass-field > .button-row{
