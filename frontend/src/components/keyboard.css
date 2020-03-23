@@ -82,6 +82,11 @@
 input.emoji-field{
   font-size:35px;
 	width:200px;
+	height:40px;
+}
+input.emoji-field + .in-field-button{
+	font-size: 35px;
+	color: #aeaeae;
 }
 
 .new-emoji-pass-field > .button-row{

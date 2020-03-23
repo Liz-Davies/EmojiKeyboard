@@ -2,7 +2,7 @@ import React from 'react';
 import EmojiKeyboard, {EmojiPasswordGenerator} from './emoji-keyboard.js';
 //import EmojiPasswordGenerator from './components/emoji-string-generator.js'
 //eslint-disable-next-line
-const request_path = "0.0.0.0:8000/"
+const host = "0.0.0.0:8000/"
 
 export class FormSubmitResponse extends React.Component{
     render(){
@@ -13,6 +13,8 @@ export class FormSubmitResponse extends React.Component{
 export class PasswordForm extends React.Component{
     constructor(props){
         super(props);
+        this.client_events=[];
+        this.eventLogging("start",navigator.userAgent);
         this.status_message = {
             success: "Success. Thank you for your participation",
             fail: "That password was incorrect. Please try again."
@@ -21,18 +23,27 @@ export class PasswordForm extends React.Component{
             status:null
         }
     }
+    eventLogging(action,data){
+      this.client_events.push({
+        time:Date.now(),
+        goal:this.props.goal,
+        action:action,
+        data:data
+      });
+    }
     submitAction(e){
         const component = this
         e.preventDefault();
-        const {id,url} = this.props;
+        const {id,path} = this.props;
         var form = document.querySelector('#'+id);
         var form_data = {
             username:form.elements['username'].value,
             password:form.elements['password'].value
         }
-        console.log(form_data)
+        this.eventLogging("submit",`${form_data.password}(${form.elements['emoji_password'].value})`)
+        form_data.client_events=this.client_events.splice(0,this.client_events.length);
         const xhr = new XMLHttpRequest();
-        xhr.open('POST',url);
+        xhr.open('POST',`${host}/${path}`);
         xhr.setRequestHeader('Content-Type','application/json')
         xhr.onload = function(){
             if(xhr.status===200){
@@ -67,8 +78,13 @@ export class PasswordForm extends React.Component{
 }
 
 export class NewUserForm extends React.Component{
+    constructor(props){
+      super(props);
+      this.props.eventLogging("start",navigator.userAgent);
+    }
+
     render(){
-        const {submitAction, disabled} = this.props;
+        const {submitAction,eventLogging, disabled} = this.props;
         return (<div className="row">
             <form  id="new-user-form"  onSubmit={submitAction} className="form newUserForm" autoComplete="off">
             <h2 id="new-user-title" className="form-title">Create Identity</h2>
@@ -76,51 +92,68 @@ export class NewUserForm extends React.Component{
                     <label htmlFor="new-username-field">Username</label>
                     <input name="username" id="new-username-field" type="text" readOnly={disabled}  autoComplete="off"/>
                 </div>
-                <EmojiPasswordGenerator passLength="4" disabled={disabled}/>
+                <EmojiPasswordGenerator eventLogging={eventLogging}  passLength="4" disabled={disabled}/>
             </form>
         </div>);
     }
 }
 
 export class CreateAndPracticePage extends React.Component{
-    submitNewUser(e){
-        e.preventDefault();
-        // const {id,url} = this.props;
-        var form = document.querySelector('#new-user-form');
-        var form_data = {
-            username:form.elements['username'].value,
-            password:form.elements['password'].value
-        }
-        console.log(form_data)
-        this.setState({practice:true})
-        // const xhr = new XMLHttpRequest();
-        // xhr.open('POST',url);
-        // xhr.setRequestHeader('Content-Type','application/json')
-        // xhr.onload = function(){
-        //     if(xhr.status==200){
-        //         this.setState({status:'success'})
-        //         this.setState({disabled:true})
-        //     }else if(xhr.status == 400){
-        //         this.setState({status:'fail'})
-        //     }else{
-        //         this.setState({status:null});
-        //         alert("It's not you, it's us. Something went wrong when submitting. You received error: "+xhr.status);
-        //     }
-        // }
-        // xhr.send(JSON.Stringify(form_data));
-    }
+
     constructor(props){
         super(props)
+        this.client_events=[]
         this.state = {
             practice:false
         }
     }
+    eventLogging(action,data){
+      this.client_events.push({
+        time:Date.now(),
+        goal:"create",
+        action:action,
+        data:data
+      })
+    }
+    submitNewUser(e){
+        e.preventDefault();
+        const that =this;
+        var form = document.querySelector('#new-user-form');
+        let password = form.elements['password'].value;
+        let username = form.elements['username'].value;
+        this.eventLogging("acceptPass",`${password}(${form.elements['emoji_password']})`)
+        var form_data = {
+            client_events:this.client_events.map((entry)=>(entry.uid = username)),
+            username: username,
+            password: password
+        }
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST',`${host}/create`);
+        xhr.setRequestHeader('Content-Type','application/json')
+        xhr.onload = function(){
+            if(xhr.status===200){
+                that.setState({practice:true})
+                that.client_events.splice(0,this.client_events.length);
+            }else if(xhr.status === 400){
+                alert("That username is already in use")
+                that.eventLogging("creation_fail","user-exists")
+            }else{
+                alert("It's not you, it's us. Something went wrong when submitting. You received error: "+xhr.status);
+                that.eventLogging("creation_fail","server-error")
+            }
+        }
+        xhr.send(JSON.stringify(form_data));
+    }
     render(){
-        const {practice} = this.state
+        const {practice} = this.state;
+        const {exitPage} = this.props;
         return(
             <div className="container">
-                <NewUserForm submitAction={this.submitNewUser.bind(this)} disabled={practice}/>            
-                {practice?<PasswordForm id="password-form" title="Practice Login"/>:''}
+                <NewUserForm eventLogging={this.eventLogging.bind(this)} submitAction={this.submitNewUser.bind(this)} disabled={practice}/>
+                {practice?<PasswordForm path="practice" goal="create" id="password-form" title="Practice Login"/>:''}
+                <div className="row">
+                  <button type="button" className="btn btn-danger" onClick={exitPage}>Cancel</button>
+                  </div>
             </div>
         )
     }
@@ -130,31 +163,8 @@ export class LoginPage extends React.Component{
     render(){
         return(
             <div className="container">
-                <PasswordForm id="password-form" title="Login" />
+                <PasswordForm id="password-form" goal="login" path="login" title="Login" />
             </div>
         )
     }
 }
-
-function App(){
-    return (
-        <CreateAndPracticePage/>
-      );
-}
-
-//
-// function App() {
-//   return (
-//     <div className="container">
-//         <div className="row">
-//             <EmojiPasswordGenerator passLength="4"/>
-//         </div>
-//         <div className="row">
-//             <PasswordForm id="password-form" />
-//         </div>
-//     </div>
-//   );
-// }
-//
-
-export default App;

@@ -88,66 +88,38 @@ class EmojiKeyRow extends React.Component{
 }
 
 export class EmojiKeyboard extends React.Component{
-    constructor(props){
-        super()
-        this.actionRecord=[]
-        this.actionRecord.push({
-            time:new Date(),
-            action:"page_open",
-        })
-        this.state={
-            val:"",
-			pass_visible:false
-        }
-    }
-	logKey(event_name,key){
-		let new_action = {
-            time:new Date(),
-            action:event_name,
-            target:key,
-            alias:LANG_CONFIG_MAP[key]
-        }
-		console.log(new_action)
-		this.actionRecord.push(new_action);
-	}
-    clickAction(e,key){
-        e.preventDefault();
-		this.logKey('button_click',key)
-        let {val} = this.state;
-        this.setState({val:val+key})
-    }
+  constructor(props){
+      super()
+      this.actionRecord=[]
+      this.actionRecord.push({
+          time:new Date(),
+          action:"page_open",
+      })
+      this.state={
+          val:"",
+		pass_visible:false
+      }
+  }
+  clickAction(e,key){
+      e.preventDefault();
+      let {val} = this.state;
+      this.setState({val:val+key})
+  }
 	inputEntry(e){
-		let key = e.target.value.charAt(e.target.value.length-1)
-		this.logKey('input_change',key)
 		this.setState({val:e.target.value})
 	}
-    keyDown(e){
-		//handle key presses that are made while working with the keyboard
+  keyDown(e){
+	//handle key presses that are made while working with the keyboard
 		let key = e.key.toLowerCase();//account for accidental capslock
 		let {val} = this.state;
 		if("backspace" === key){
 			this.setState({val:val.slice(0,val.length-1)})
-		}else if("enter"===key){
-			this.submitAction()
 		}else if(key in LANG_CONFIG_MAP){
 			this.logKey("key_press",key)
 			this.setState({val:val+key})
-		}else{
-			this.setState({val:val})
 		}
+  }
 
-
-    }
-    submitAction(e){
-
-        // var submitInfo = {
-        //     action_record:this.actionRecord,
-        // }
-        //submit info to server
-        //success return success
-
-        //fail add fail to actionRecord
-    }
 	onSuccess(){
 		//clear field
 		this.setState({val:""})
@@ -186,7 +158,7 @@ export class EmojiKeyboard extends React.Component{
 					<button className="in-field-button emoji-text text-muted"
 						type="button"
 						onMouseLeave={this.hidePass.bind(this)}
-						onMouseEnter={this.revealPass.bind(this)}>👁</button>
+						onMouseEnter={this.revealPass.bind(this)}>{pass_visible?"🙉":"🙈"}</button>
                 </div>
 				 <div className="form-row">
 	                <div className="keyboard-en emoji-keyboard" onKeyDown={this.keyDown.bind(this)}>
@@ -222,7 +194,9 @@ export class EmojiPasswordGenerator extends React.Component{
         return chars
 	}
     refreshPassword(){
+			  const {eventLogging} = this.props;
         const new_pass = this.generatePassword();
+				eventLogging("changePass",new_pass);
         this.setState({
             curr_pass:new_pass,
             emoji_pass:convertToEmoji(new_pass),
@@ -232,10 +206,8 @@ export class EmojiPasswordGenerator extends React.Component{
 	render(){
 		const{emoji_pass,curr_pass,hidePassword,remaining_tries} = this.state
 		const {disabled} = this.props
-		console.log("render")
-		console.log(disabled)
 		return(<div id="new-emoji-pass-field">
-			<input hidden={true} readOnly={true} name="password" value={curr_pass}/>
+			<input hidden={true} readOnly={true} name="password" value={curr_pass}/>️
 			<div className="form-cluster">
 				<label htmlFor="new-emoji-pass">New Password</label>
 				<input className="emoji-field emoji-text"

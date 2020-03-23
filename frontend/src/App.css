@@ -49,6 +49,10 @@ input{
     font-size:16px;
     padding:10px;
 }
+.btn-xl{
+  font-size:20px;
+  padding:10px;
+}
 .btn-danger{
     background-color:#7b1717;
     border-color:#7b1717;
@@ -92,18 +96,33 @@ input{
     border:none;
 }
 
+.card-modal{
+  padding:0px;
+  margin:auto;
+  margin-top:15vh;
+  box-shadow: 2px 3px 10px 0px #54585e;
+  width:250px;
+}
+.card-title{
+  font-size:30px;
+  padding:15px;
+  border-bottom:1px solid #54585e;
+}
+.card-body{
+  padding:15px;
+}
+.button-col{
+  display:flex;
+  flex-direction: column;
+}
+.button-col > Button, .button-col > .btn {
+  margin-bottom:5px;
+}
 
 
 .App {
   text-align: center;
 
-}
-
-
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -113,27 +132,4 @@ input{
 }
 .hidden{
     display:none;
-}
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
