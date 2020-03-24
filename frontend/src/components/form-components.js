@@ -2,7 +2,7 @@ import React from 'react';
 import EmojiKeyboard, {EmojiPasswordGenerator} from './emoji-keyboard.js';
 //import EmojiPasswordGenerator from './components/emoji-string-generator.js'
 //eslint-disable-next-line
-const host = "0.0.0.0:8000/"
+const host = "http://localhost:8000"
 
 export class FormSubmitResponse extends React.Component{
     render(){
@@ -63,7 +63,9 @@ export class PasswordForm extends React.Component{
         return (<div className="row">
             <form id={id}  onSubmit={this.submitAction.bind(this)} className="form passwordForm" autoComplete="off">
             <h2 id={id+"-title"} className="form-title">{title}</h2>
-            {status!=null?<FormSubmitResponse status={status} message={this.status_message[status]} /> : ""}
+            <div className="form-row">
+              {status!=null?<FormSubmitResponse status={status} message={this.status_message[status]} /> : ""}
+            </div>
             <div className="form-cluster">
                 <label htmlFor="login-username-field">Username</label>
                 <input name="username" id="login-username-field" type="text"  autoComplete="off"/>
@@ -123,7 +125,7 @@ export class CreateAndPracticePage extends React.Component{
         let username = form.elements['username'].value;
         this.eventLogging("acceptPass",`${password}(${form.elements['emoji_password']})`)
         var form_data = {
-            client_events:this.client_events.map((entry)=>(entry.uid = username)),
+            client_events:this.client_events.map((entry)=>{entry.uid = username; return entry}),
             username: username,
             password: password
         }
@@ -133,7 +135,7 @@ export class CreateAndPracticePage extends React.Component{
         xhr.onload = function(){
             if(xhr.status===200){
                 that.setState({practice:true})
-                that.client_events.splice(0,this.client_events.length);
+                that.client_events.splice(0,that.client_events.length);
             }else if(xhr.status === 400){
                 alert("That username is already in use")
                 that.eventLogging("creation_fail","user-exists")

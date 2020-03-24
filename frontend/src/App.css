@@ -88,7 +88,7 @@ input{
 .form-cluster> label{
     position: absolute;
     padding:0px 4px;
-    top: -14px;
+    top: -10px;
     left: 10px;
     background-color: white;
 }
@@ -119,6 +119,20 @@ input{
   margin-bottom:5px;
 }
 
+.message-box{
+  padding: 15px;
+  background: #b5cee1;
+  border-radius: 5px;
+  border: 1px solid #7995aa;
+}
+.message-success{
+  background: #c7ddc7;
+  border: 1px solid #699169;
+}
+.message-fail{
+  background: #eabdbd;
+  border: 2px dotted #b33535;
+}
 
 .App {
   text-align: center;
