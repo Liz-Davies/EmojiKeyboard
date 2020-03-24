@@ -1,16 +1,16 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const hostname = 'localhost';
+const hostname = '0.0.0.0';
 const port = 8000;
-const datFile = "out/emojiDat.csv"
-const writeStream = fs.createWriteStream("./out/emoji.csv",{flags:"a"});
+const datFile = "emojiDat.csv"
+const writeStream = fs.createWriteStream(datFile,{flags:"a"});
 
 const PUBLIC_DIR = path.resolve("./public");
 
 
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database("./db/users.db",
+const db = new sqlite3.Database("./users.db",
       (err)=>{
         if(err){
           console.error(
