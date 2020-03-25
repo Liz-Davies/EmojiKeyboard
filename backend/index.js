@@ -1,8 +1,8 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const hostname = '0.0.0.0';
-const port = 8000;
+const hostname = 'localhost';
+const port = 8080;
 const datFile = "emojiDat.csv"
 const writeStream = fs.createWriteStream(datFile,{flags:"a"});
 
@@ -47,9 +47,8 @@ time_offset (optional) : the time offset (for events submitted from the frontend
 function writeEventToFile(event_obj,time_offset=0){
   var time = time_offset === 0 ?
           new Date(event_obj.time):
-          new Date(new Date(event_obj.time).getTime()+time_offset);
+          new Date((new Date(event_obj.time)).getTime()+time_offset);
   let event_line = `${time}","${event_obj.username}","testWeb","emojiTextRandom","emojis","${event_obj.goal}","${event_obj.action}","${event_obj.data}"\n`;
-  console.log(event_line);
   writeStream.write(event_line);
 
 }
@@ -125,7 +124,7 @@ function createUser(req,res,raw_data){
   let data = JSON.parse(raw_data);
   if(data.client_events){
     //offset attempts to standardize client time with server time
-    let time_offset = Date.now().getTime()- new Date(data.client_events[data.client_events.length-1].time).getTime();
+    let time_offset = Date.now() - (new Date(data.client_events[data.client_events.length-1].time)).getTime();
     data.client_events.forEach((item)=>{
       writeEventToFile(item,time_offset);
     });
