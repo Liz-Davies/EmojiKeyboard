@@ -4,7 +4,6 @@
 }
 
 .emoji-keyboard{
-    border:1px solid #0e2638;
     padding:5px;
     padding-bottom:15px;
     margin-top: 5px;
@@ -30,9 +29,10 @@
     height:35px;
     min-width:35px;
     min-height:35px;
-    background-color: #a7bfbf;
-    border:1px solid #a7bfbf;
-    box-shadow: 1px 2px 0px 1px #0e2638;
+	background-color: #aeaeae;
+	border: 1px solid #aeaeae;
+	box-shadow: 1px 2px 0px 1px #54585e;
+	color:#212121;
     margin:2px;
     border-radius: 3px;
 }
@@ -44,7 +44,6 @@
     left:3px;
     bottom:3px;
     right:3px;
-		color: #0e2638;
 
 }
 .emoji-key > .key-reminder{
@@ -55,13 +54,14 @@
     display:none;
 }
 .emoji-key:hover{
-    background-color:#cfdcdc;
-    border: 1px solid #cfdcdc;
+    background-color:#e6e6e6;
+    border: 1px solid #e6e6e6;
 }
 .emoji-key:active,.emoji-key.pressed{
-    background-color:  #0e2638;
-    border:1px solid #a7bfbf;
-    color:#a7bfbf;
+	background-color: #212121;
+	border: 1px solid #aeaeae;
+	box-shadow: 1px 2px 0px 1px #54585e;
+	color:#aeaeae;
 }
 
 .new-emoji-pass-field{

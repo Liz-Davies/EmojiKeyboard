@@ -119,11 +119,6 @@ export class EmojiKeyboard extends React.Component{
 			this.setState({val:val+key})
 		}
   }
-
-	onSuccess(){
-		//clear field
-		this.setState({val:""})
-	}
 	revealPass(){
 		this.setState({pass_visible:true});
 	}
@@ -176,15 +171,21 @@ export class EmojiPasswordGenerator extends React.Component{
 	constructor(props){
 		super(props)
 		this.validChars = Object.keys(LANG_CONFIG_MAP);
-        let new_pass = this.generatePassword();
-		console.log("constr")
 		this.state={
-			curr_pass:new_pass,
-			emoji_pass:convertToEmoji(new_pass),
+			curr_pass:"",
+			emoji_pass:"",
 			remaining_tries:3,
 			hidePassword:props.hidePassword
 		}
 	}
+	componentWillMount(){
+		let new_pass = this.generatePassword();
+		this.setState({
+			curr_pass:new_pass,
+			emoji_pass:convertToEmoji(new_pass),
+		})
+	}
+
 	generatePassword(){
 		var chars = "";
 		var range = this.validChars.length;
@@ -194,9 +195,9 @@ export class EmojiPasswordGenerator extends React.Component{
         return chars
 	}
     refreshPassword(){
-			  const {eventLogging} = this.props;
+	    const {eventLogging} = this.props;
         const new_pass = this.generatePassword();
-				eventLogging("changePass",new_pass);
+		eventLogging("changePass",new_pass);
         this.setState({
             curr_pass:new_pass,
             emoji_pass:convertToEmoji(new_pass),

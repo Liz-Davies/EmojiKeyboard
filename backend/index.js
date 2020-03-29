@@ -29,7 +29,12 @@ function closeAndExit(status){
 }
 
 db.serialize(()=>{
-  db.run('CREATE TABLE IF NOT EXISTS users (username text PRIMARY KEY,password text NOT NULL)',(err)=>{
+  db.run(`CREATE TABLE IF NOT EXISTS users (
+      username TEXT NOT NULL,
+      website TEXT NOT NULL,
+      password TEXT NOT NULL,
+      PRIMARY KEY (username, website)
+  );`,(err)=>{
     if(err){
       console.error(err);
       closeAndExit(1);
@@ -48,20 +53,20 @@ function writeEventToFile(event_obj,time_offset=0){
   var time = time_offset === 0 ?
           new Date(event_obj.time):
           new Date((new Date(event_obj.time)).getTime()+time_offset);
-  let event_line = `${time}","${event_obj.username}","testWeb","emojiTextRandom","emojis","${event_obj.goal}","${event_obj.action}","${event_obj.data}"\n`;
+  let event_line = `${time}","${event_obj.username}","${event_obj.website}","emojiTextRandom","emojis","${event_obj.goal}","${event_obj.action}","${event_obj.data}"\n`;
   writeStream.write(event_line);
 
 }
-function getUser(username,callback){
+function getUser(username,website,callback){
   return db.get(`SELECT DISTINCT Username username, Password password
         from users
-        where Username=?;`,[username],(err,row)=>{
+        where Username=? AND Website=?;`,[username,website],(err,row)=>{
           if(err)console.error(`An error occured while retrieving from database\nFound Error:\n${err.message}`)
           callback(err,row)
         });
 }
-function insertUser(username,password,callback){
-  return db.run(`INSERT INTO users(username,password) VALUES(?,?);`,[username,password],callback);
+function insertUser(username,password,website,callback){
+  return db.run(`INSERT INTO users(username,password,website) VALUES(?,?,?);`,[username,password,website],callback);
 }
 function resetPassword(username,old_password,new_password){
   var changes= db.run(`UPDATE employees
@@ -81,9 +86,10 @@ function loginUser(req,res,raw_data){
   var event_data = {
     time:new Date(),
     username:data.username,
+    website:data.website,
     goal:"login"
   }
-  getUser(data.username,(err,user)=>{
+  getUser(data.username,data.website,(err,user)=>{
     if(err){
       event_data.action="db_fail";
       res.writeHead(500);
@@ -122,18 +128,19 @@ function createUser(req,res,raw_data){
   var event_data = {
     time:new Date(),
     username:data.username,
+    website:data.website,
     goal:"create"
   }
   event_data.data=`${data.username}:${data.password}`
-  insertUser(data.username,data.password,(err)=>{
+  insertUser(data.username,data.password,data.website,(err)=>{
     if(err){
-      event_data.action="fail"
+      event_data.action="fail";
       event_data.data=err.message;
       writeEventToFile(event_data);
       res.writeHead(400);
       res.end("Failed to create user");
     }else{
-      event_data.action="success?"
+      event_data.action="success"
       event_data.data=`${data.username}:${data.password}`
       writeEventToFile(event_data);
       res.writeHead(200);
@@ -153,16 +160,16 @@ function loginPractice(req,res,raw_data){
   var event_data = {
     time:new Date(),
     username:data.username,
+    website:data.website,
     goal:"practice"
   }
-  getUser(data.username,(err,user)=>{
+  getUser(data.username,data.website,(err,user)=>{
     if(err){
       event_data.action="db_err";
       res.writeHead(500);
       event_data.data=err.message;
       writeEventToFile(event_data);
     }else if(user){
-      console.log(user);
       event_data.data=`${data.password}:${user.password}`;
       if(user.password===data.password){
         event_data.action = "goodPractice";
@@ -186,7 +193,6 @@ function handlePost(req,res){
   var data = "";
   req.on('data',(dat)=>{data+=dat});
   req.on('end',()=>{
-    console.log(data)
     if(req.url === "/login"){
       loginUser(req,res,data);
     }else if(req.url === "/create"){
