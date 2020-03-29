@@ -131,7 +131,7 @@ export class CreateAndPracticePage extends React.Component{
         let username = form.elements['username'].value;
         this.eventLogging("acceptPass",`${password}(${form.elements['emoji-password'].value})`)
         var form_data = {
-            client_events:this.client_events.map((entry)=>{entry.uid = username; return entry}),
+            client_events:this.client_events.map((entry)=>{entry.username = username; return entry}),
             username: username,
             password: password
         }
@@ -151,6 +151,7 @@ export class CreateAndPracticePage extends React.Component{
                   respType:"fail",
                   respMsg:"That username is already in use"
                 })
+                that.client_events.splice(0,that.client_events.length);
                 that.eventLogging("creation_fail","user-exists")
             }else{
                 that.setState({

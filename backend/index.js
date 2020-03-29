@@ -61,17 +61,7 @@ function getUser(username,callback){
         });
 }
 function insertUser(username,password,callback){
-  var return_val = false;
-  return db.run(`INSERT INTO users(username,password) VALUES(?,?);`,[username,password],(err)=>{
-    if(err) {
-      console.error(
-`An error occured while creating user
-Found Error:
-${err.message}`);
-      callback(err);
-    }
-    callback();
-  });
+  return db.run(`INSERT INTO users(username,password) VALUES(?,?);`,[username,password],callback);
 }
 function resetPassword(username,old_password,new_password){
   var changes= db.run(`UPDATE employees
@@ -138,12 +128,12 @@ function createUser(req,res,raw_data){
   insertUser(data.username,data.password,(err)=>{
     if(err){
       event_data.action="fail"
+      event_data.data=err.message;
       writeEventToFile(event_data);
       res.writeHead(400);
       res.end("Failed to create user");
-      console.log(res.status_code);
     }else{
-      event_data.action="success"
+      event_data.action="success?"
       event_data.data=`${data.username}:${data.password}`
       writeEventToFile(event_data);
       res.writeHead(200);
