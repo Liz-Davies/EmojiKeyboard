@@ -80,7 +80,7 @@ Post request accept JSON objects that may or may not have a list of client event
 
 ## Suggestions by topic
 |Topic|Emojis|Emojis After Replacements|
-|-|-|
+|-|-|-|
 |travel | 🌵🚗🗿|🌵🚗🗿|
 |sport | 🎱⚽🎿🥊🥇|🎱⚽🎿🎲🏆|
 |animals | 🦄🐶🐞🐖🐱|🐼🐧🐞🐖🐱|
@@ -91,7 +91,7 @@ Post request accept JSON objects that may or may not have a list of client event
 |fantasy | 👑💎🦄|👑💎|
 |space/scifi | 👾🤖🚀🌙☄️| 🌃🔭🚀🌙☄️|
 |home | 🔑💡🏠|🔑💡🏠💌📫|
-|cards | ♣️♦️♠️♥️||
+|cards | ♣️♦️♠️♥️|♣️♦️♠️♥️|
 |other | 💌🧦||
 
 ## Final Key Mapping
@@ -132,7 +132,7 @@ Post request accept JSON objects that may or may not have a list of client event
 |l|🏠|
 |;|💌|
 |'|🔑|
-|\\|💡|
+|\\ |💡|
 |z|♣️|
 |x|♦️|
 |c|♠️|
