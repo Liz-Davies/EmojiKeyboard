@@ -12,7 +12,9 @@ Before procedeing please be sure you have signed the neccesary consent forms.
 
 With the same passwords you created before you will be asked to submit the correct password for each mock-website. The websites will be presented in a random order.
 `
-
+/*
+    The app element allows the user to enter either create or login pages.
+*/
 class App extends React.Component{
   constructor(props){
     super(props)

@@ -1,6 +1,18 @@
 import React from 'react';
 import './keyboard.css';
-// import LANG_CONFIG from './emoji-language-config.js'
+
+/*
+The core components are stored in this file.
+The keyboard renders key rows and the key rows render keys.
+
+The config for what keys appear in which rows and which emojis appear on which
+keys appears in a short config below.
+
+Because of shared configs the EmojiPasswordGenerator is also written here.
+
+This file also imports the css page which imports selected font (Noto-Emoji)
+so that the font is always carried with the components.
+*/
 
 const LANG_CONFIG_MAP ={
 	"0": "🍁",
