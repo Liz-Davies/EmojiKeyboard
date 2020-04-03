@@ -312,7 +312,7 @@ export class CreateAndPracticePage extends React.Component{
             msgType={respType}/>
           {practice?<PasswordForm
               path="practice"
-              goal="create"
+              goal="practice"
               website={store.id}
               id={"password-form-"+store.id}
               successMsg="Successful practice. You can practice again or select the next store using the store selector above."

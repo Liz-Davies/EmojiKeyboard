@@ -8,7 +8,7 @@ const writeStream = fs.createWriteStream(datFile,{flags:"a"});
 
 const PUBLIC_DIR = path.resolve("./public");
 
-//open database
+
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database("./users.db",
       (err)=>{
@@ -27,7 +27,7 @@ function closeAndExit(status){
   if(server!=null)server.close();
   process.exit(1);
 }
-//create table if it does not yet exist
+
 db.serialize(()=>{
   db.run(`CREATE TABLE IF NOT EXISTS users (
       username TEXT NOT NULL,
@@ -57,12 +57,6 @@ function writeEventToFile(event_obj,time_offset=0){
   writeStream.write(event_line);
 
 }
-/*
-getUser(username,website,callback)
-    username: the username for the user
-    website: the id for the website the user is associated with
-    callback: a callback that decides what to do with the retrieved user
-*/
 function getUser(username,website,callback){
   return db.get(`SELECT DISTINCT Username username, Password password
         from users
@@ -71,26 +65,31 @@ function getUser(username,website,callback){
           callback(err,row)
         });
 }
-/*
-insertUser(username,password,website,callback)
-    username: the username for the user
-    website: the id for the website the user is associated with
-    password: password for the new user
-    callback: a callback that confirms user creation
-*/
 function insertUser(username,password,website,callback){
   return db.run(`INSERT INTO users(username,password,website) VALUES(?,?,?);`,[username,password,website],callback);
 }
+function resetPassword(username,old_password,new_password){
+  var changes= db.run(`UPDATE employees
+SET password = "?"
+WHERE username = "?" AND password = "?";`[new_password,username,old_password],
+    (err)=>{
+      if(err){
+        console.err(err.message);
+      }else{
+        return this.changes;
+      }
+    });
+}
 
-/*
-function handles the logic required for post requests to /login
-loginUser(req,res,raw_data)
-    req:        the request object
-    res:        the response object
-    raw_data:   the unparsed json object
-*/
 function loginUser(req,res,raw_data){
   let data = JSON.parse(raw_data);
+  if(data.client_events){
+    //offset attempts to standardize client time with server time
+    let time_offset = Date.now()-data.client_events[data.client_events.length-1].time;
+    data.client_events.forEach((item)=>{
+      writeEventToFile(item,time_offset);
+    });
+  }
   var event_data = {
     time:new Date(),
     username:data.username,
@@ -123,13 +122,7 @@ function loginUser(req,res,raw_data){
   });
 
 }
-/*
-function handles the logic required for post requests to /create
-createUser(req,res,raw_data)
-    req:        the request object
-    res:        the response object
-    raw_data:   the unparsed json object
-*/
+
 function createUser(req,res,raw_data){
   let data = JSON.parse(raw_data);
   if(data.client_events){
@@ -162,13 +155,6 @@ function createUser(req,res,raw_data){
     }
   });
 }
-/*
-function handles the logic required for post requests to /practice
-loginPractice(req,res,raw_data)
-    req:        the request object
-    res:        the response object
-    raw_data:   the unparsed json object
-*/
 function loginPractice(req,res,raw_data){
   let data = JSON.parse(raw_data);
   if(data.client_events){
@@ -210,16 +196,6 @@ function loginPractice(req,res,raw_data){
   });
 }
 
-/*
-function handles the logic required to collect data associated
-with a post request
-collects data and then when data is finished transmission it acts as a
-dispatcher, calling the appropriate function for each path.
-handle(req,res)
-    req:        the request object
-    res:        the response object
-    raw_data:   the unparsed json object
-*/
 function handlePost(req,res){
   var data = "";
   req.on('data',(dat)=>{data+=dat});
@@ -236,11 +212,7 @@ function handlePost(req,res){
     }
   });
 }
-/*
-function handles get requests. It fetches files and resources from the public
-folder and serves it to the client. It does have protection for requests for
-files made below the public folder.
-*/
+
 function handleGet(req,res){
   filePath = path.join(PUBLIC_DIR,(req.url==="" || req.url==="/")? "/index.html" : req.url);
   if(filePath.indexOf(PUBLIC_DIR)!=0) {
@@ -291,21 +263,19 @@ function handleGet(req,res){
      }
    });
 }
-//create server. Simple call back dispatches to the method handler functions
+
 const server = http.createServer((req, res) => {
   console.log(`Recieved ${req.method} request for: ${req.url}`);
   if(req.method === "POST"){
     handlePost(req,res);
   }else if(req.method === "GET"){
     handleGet(req,res);
+    res.statusCode=404
   }else{
     res.statusCode=405;
-    res.end();
   }
 });
 
-
-//start server
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
