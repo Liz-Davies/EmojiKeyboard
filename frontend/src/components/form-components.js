@@ -54,7 +54,7 @@ export class PasswordForm extends React.Component{
     constructor(props){
         super(props);
         this.client_events=[];
-
+        console.log("Construct "+this.props.id)
         this.eventLogging("start",navigator.userAgent);
         this.default_status_message = {
             success: this.props.hasOwnProperty("successMsg") ? this.props.successMsg : "Success.",
@@ -65,6 +65,7 @@ export class PasswordForm extends React.Component{
         }
     }
     componentDidMount(){
+        console.log("Mount "+this.props.id)
         this.remaining_tries=3;
     }
     eventLogging(action,data){
@@ -101,12 +102,11 @@ export class PasswordForm extends React.Component{
                 component.setState({
                     status:'success',
                 });
-                if(typeof(component.props.onSuccess)!="undefined") component.props.onSuccess();
+                if(typeof(component.props.onContinue)!="undefined") component.props.onContinue(true);
             }else if(xhr.status === 401){
                 component.remaining_tries-=1;
                 if(component.remaining_tries ===0){
-                  if(typeof(component.props.onSuccess)!="undefined") component.props.onSuccess();
-                  component.err_message = "You've run out of attempts. Moving to next website";
+                  if(typeof(component.props.onContinue)!="undefined") component.props.onContinue(false);
                 }
                 component.setState({status:'fail'})
             }else if (xhr.status === 404){
@@ -298,8 +298,8 @@ export class CreateAndPracticePage extends React.Component{
     }
     renderStores(){
       const {currentShop,user,practice,respMsg,respType} = this.state
-      return STORE_CONFIGS.map((store)=>{return(
-        <div className={currentShop.id === store.id ? "" : "hidden"}>
+      return STORE_CONFIGS.map((store)=>{if(currentShop.id === store.id) return(
+        <div>
           <h1 className="brand-title">{store.name}</h1>
           <h4 className="tag-line">{store.tag_line}</h4>
           <NewUserForm
@@ -357,35 +357,58 @@ export class LoginPage extends React.Component{
           .sort((a,b)=>a.sortIndex - b.sortIndex)
           .map((item)=>item.value);
         this.state={
-            currentShop:this.shopOptions.pop()//last element of the random list
+            currentShop:this.shopOptions.pop(),//last element of the random list
+            message:"",
+            status:""
         }
     }
-    nextWebsite(){
+    onContinue(success){
         this.setState({
-            currentShop:this.shopOptions.pop()
+            status: success ? "success" : "fail",
+            message: success ? "Success! You have been moved to next website." :
+                  "You ran out of attempts. You have been moved to the next website"
         })
+        this.nextWebsite();
+    }
+    nextWebsite(){
+        if(this.shopOptions.length === 0){
+            this.setState({
+                currentShop:null,
+                status:"success",
+                message:this.thank_you_msg
+            })
+        }else{
+            this.setState({
+                currentShop:this.shopOptions.pop(),
+            })
+        }
+
     }
     renderShops(){
       return STORE_CONFIGS.map((shop,index)=>{
-        return(
-            <div className={"container "+shop.id + " " + (shop.id===this.state.currentShop? "" : "hidden")}>
-                <h1 className="brand-title">{shop.name}</h1>
-                <h4 className="tag-line">{shop.tag_line}</h4>
-                <PasswordForm ley={shop.id} onSuccess={this.nextWebsite.bind(this)}
-                    id={"password-form-"+shop.id}
-                    website={shop.id}
-                    successMsg="Success! Moving to next website."
-                    goal="login"
-                    path="login"
-                    title="Login" />
-            </div>
-        )
+        if(shop.id===this.state.currentShop){
+          console.log(shop.id)
+          return(
+              <div className={"container "+shop.id }>
+                  <h1 className="brand-title">{shop.name}</h1>
+                  <h4 className="tag-line">{shop.tag_line}</h4>
+                  <PasswordForm key={shop.id} onContinue={this.onContinue.bind(this)}
+                      id={"password-form-"+shop.id}
+                      website={shop.id}
+                      goal="login"
+                      path="login"
+                      title="Login" />
+              </div>
+          )
+        }
       })
     }
     render(){
-        return( this.shopOptions.length > 0 ? this.renderShops() :
+      const {message,status} =this.state;
+        return(
               <div className="container">
-                  <MessageBox status="success" message={this.thank_you_msg}/>
+                  <MessageBox status={status} message={message}/>
+                  {this.renderShops()}
               </div>
         )
     }
