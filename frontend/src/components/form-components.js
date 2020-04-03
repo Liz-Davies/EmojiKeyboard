@@ -1,10 +1,15 @@
 import React from 'react';
 import EmojiKeyboard, {EmojiPasswordGenerator} from './emoji-keyboard.js';
 import './form-components.css';
-//import EmojiPasswordGenerator from './components/emoji-string-generator.js'
-//eslint-disable-next-line
-// const host = "134.117.132.42"
 
+/*
+The emoji components are formed into larger form components here.
+The password form is reused for both the practice login and login pages with slight prop changes.
+The new user form uses the emoji generator.
+
+The "page" elements compose these into two "pages" one for creation and practice and one for official login;
+*/
+//store configs for quick reuse
 const STORE_CONFIGS = [
     {
         name:"Banksy-ATM",
@@ -26,6 +31,10 @@ const STORE_CONFIGS = [
 function emojiSpan(str){
     return <span className="emoji-text">{str}</span>
 }
+/*
+MesageBox is a smaller element that appears when a status has been set.
+Its mostly a convenience element. Elements created by this will have the .message-box
+*/
 
 export class MessageBox extends React.Component{
     render(){
@@ -36,7 +45,11 @@ export class MessageBox extends React.Component{
         );
     }
 }
-
+/*
+Password form is reused for both practice and login.
+It handles the requests to the server, the "path" and "goal" are determined by
+the properties passed to it by the parent
+*/
 export class PasswordForm extends React.Component{
     constructor(props){
         super(props);
@@ -52,8 +65,8 @@ export class PasswordForm extends React.Component{
         }
     }
     componentWillMount(){
-          this.remaining_tries = 3;
-          console.log("Will Mount")
+        console.log("Will mount")
+        this.remaining_tries=3;
     }
     eventLogging(action,data){
       this.client_events.push({
@@ -66,6 +79,7 @@ export class PasswordForm extends React.Component{
     }
     submitAction(e){
         const component = this
+        if(this.remaining_tries<=0)return;
         e.preventDefault();
         const {id,path,website} = this.props;
         var form = document.querySelector('#'+id);
@@ -86,18 +100,19 @@ export class PasswordForm extends React.Component{
         xhr.onload = function(){
             console.log(xhr.status);
             if(xhr.status===200){
-
-                component.setState({
-                    status:'success',
-                });
-                form.reset()
                 if(component.props.onSuccess) component.props.onSuccess();
+                else{
+                    component.setState({
+                        status:'success',
+                    });
+                }
+                form.reset()
+
             }else if(xhr.status === 401){
                 component.remaining_tries-=1;
                 if(component.remaining_tries ===0){
                   component.props.onSuccess();
                   component.err_message = "You've run out of attempts. Moving to next website";
-                  component.remaining_tries = 3;
                 }
                 component.setState({status:'fail'})
             }else if (xhr.status === 404){
@@ -130,7 +145,9 @@ export class PasswordForm extends React.Component{
     </div>);
     }
 }
-
+/*
+New User Form has a username and new password field.
+*/
 export class NewUserForm extends React.Component{
     constructor(props){
       super(props);
@@ -153,7 +170,11 @@ export class NewUserForm extends React.Component{
         </div>);
     }
 }
-
+/*
+    Store selector organizes the stores in neat row
+    the state of which store is active and which stores remain are handled in
+    the parent element so this is a very light element.
+*/
 class StoreSelector extends React.Component{
     // selectStore
     // selectedStore
@@ -176,6 +197,13 @@ class StoreSelector extends React.Component{
     }
 
 }
+
+/*
+    Create and Practice page composes the new user form and the practice form
+    into a single page.
+    This element also handles the requests for new users so that the Practice
+    form will not appear until the user has been created successfully.
+*/
 
 export class CreateAndPracticePage extends React.Component{
     completedCreatePrompt = 'You have created your final password. When you are done practicing hit the "return" button above to return to the login prompt';
@@ -329,7 +357,10 @@ export class CreateAndPracticePage extends React.Component{
         )
     }
 }
-//eslint-disable-next-line
+/*
+    Login page manages the three separate logins. It switches to a random next
+    store upon succesful login or upon repeated failure.
+*/
 export class LoginPage extends React.Component{
     thank_you_msg = 'We here at team "A Funny Name" would like to thank you for your participation. We appreciate the time you have taken to assist us in our academic pursuits'
     constructor(props){
@@ -354,7 +385,7 @@ export class LoginPage extends React.Component{
             <div className={"container "+shop.id + " " + (shop.id===this.state.currentShop? "" : "hidden")}>
                 <h1 className="brand-title">{shop.name}</h1>
                 <h4 className="tag-line">{shop.tag_line}</h4>
-                <PasswordForm onSuccess={this.nextWebsite.bind(this)}
+                <PasswordForm ley={shop.id} onSuccess={this.nextWebsite.bind(this)}
                     id="password-form"
                     website={shop.id}
                     successMsg="Success! Moving to next website."
