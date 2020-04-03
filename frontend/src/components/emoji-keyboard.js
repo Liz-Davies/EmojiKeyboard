@@ -146,7 +146,7 @@ export class EmojiKeyboard extends React.Component{
                 <div className="form-cluster">
                     <label htmlFor="#emoji-pass-field">Password</label>
 					<input className="text-input emoji-field"
-						required="true"
+						required={true}
 						name="password"
 						type="password"
 						id={id}
@@ -191,7 +191,7 @@ export class EmojiPasswordGenerator extends React.Component{
 			hidePassword:props.hidePassword
 		}
 	}
-	componentWillMount(){
+	componentDidMount(){
 		let new_pass = this.generatePassword();
 		this.setState({
 			curr_pass:new_pass,
@@ -225,7 +225,6 @@ export class EmojiPasswordGenerator extends React.Component{
 			<div className="form-cluster">
 				<label htmlFor="new-emoji-pass">New Password</label>
 				<input className="emoji-field emoji-text"
-					id="new-emoji-pass"
 					name="emoji-password"
 					type={hidePassword ? "password" : "text"}
 					readOnly={true}
