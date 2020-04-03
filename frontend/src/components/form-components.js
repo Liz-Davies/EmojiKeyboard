@@ -41,14 +41,19 @@ export class PasswordForm extends React.Component{
     constructor(props){
         super(props);
         this.client_events=[];
+
         this.eventLogging("start",navigator.userAgent);
-        this.status_message = {
+        this.default_status_message = {
             success: this.props.hasOwnProperty("successMsg") ? this.props.successMsg : "Success.",
             fail: "That password was incorrect. Please try again."
         }
         this.state = {
-            status:null
+            status:null,
         }
+    }
+    componentWillMount(){
+          this.remaining_tries = 3;
+          console.log("Will Mount")
     }
     eventLogging(action,data){
       this.client_events.push({
@@ -64,14 +69,18 @@ export class PasswordForm extends React.Component{
         e.preventDefault();
         const {id,path,website} = this.props;
         var form = document.querySelector('#'+id);
+        this.eventLogging("submit",`${form.elements['password'].value}(${form.elements['emoji_password'].value})`)
         var form_data = {
+          //add username to all client events
+            client_events: this.client_events.map((item)=>{item.username=form.elements['username'].value;return item;}),
             username:form.elements['username'].value,
             password:form.elements['password'].value,
             website:website
         }
-        this.eventLogging("submit",`${form_data.password}(${form.elements['emoji_password'].value})`)
-        form_data.client_events=this.client_events.splice(0,this.client_events.length);
+        console.log(form_data)
+        this.client_events.splice(0,this.client_events.length);//empty list
         const xhr = new XMLHttpRequest();
+        this.err_message ="";
         xhr.open('POST',path);
         xhr.setRequestHeader('Content-Type','application/json')
         xhr.onload = function(){
@@ -84,8 +93,18 @@ export class PasswordForm extends React.Component{
                 form.reset()
                 if(component.props.onSuccess) component.props.onSuccess();
             }else if(xhr.status === 401){
+                component.remaining_tries-=1;
+                if(component.remaining_tries ===0){
+                  component.props.onSuccess();
+                  component.err_message = "You've run out of attempts. Moving to next website";
+                  component.remaining_tries = 3;
+                }
                 component.setState({status:'fail'})
-            }else{
+            }else if (xhr.status === 404){
+              component.err_message="User does not exist";
+              component.setState({status:'fail'})
+
+            } else {
                 component.setState({status:null});
                 alert("It's not you, it's us. Something went wrong when submitting. You received error: "+xhr.status);
             }
@@ -98,10 +117,10 @@ export class PasswordForm extends React.Component{
         return (<div className="row">
             <form id={id}  onSubmit={this.submitAction.bind(this)} className="form passwordForm" autoComplete="off">
             <h2 id={id+"-title"} className="form-title">{title}</h2>
-            <MessageBox status={status} message={this.status_message[status]} />
+            <MessageBox status={status} message={this.err_message ? this.err_message : this.default_status_message[status]} />
             <div className="form-cluster">
                 <label htmlFor="login-username-field">Username</label>
-                <input name="username" id="login-username-field" type="text"  autoComplete="off"/>
+                <input required="true" name="username" id="login-username-field" type="text"  autoComplete="off"/>
             </div>
             <EmojiKeyboard id="login-password-field" type="password"/>
             <div className="form-row">
@@ -159,7 +178,7 @@ class StoreSelector extends React.Component{
 }
 
 export class CreateAndPracticePage extends React.Component{
-    completedCreatePrompt = 'You have created your final password. When you are done practicing hit "back" to return to the login prompt';
+    completedCreatePrompt = 'You have created your final password. When you are done practicing hit the "return" button above to return to the login prompt';
     constructor(props){
         super(props)
         this.client_events=[]
@@ -184,9 +203,29 @@ export class CreateAndPracticePage extends React.Component{
     }
     submitNewUser(e){
         e.preventDefault();
+        var form = document.querySelector('#new-user-form');
+        if(form.elements['username'].value.length<4){
+          this.setState({
+            respType:"fail",
+            respMsg:"Username must be at least 4 characters"
+          });
+          return;
+        }else if(form.elements['username'].value.length>32){
+          this.setState({
+            respType:"fail",
+            respMsg:"Username must be shorter than 32 characters"
+          });
+          return;
+        }else if(!form.elements['username'].value.match(/^[A-Za-z0-9]+$/)){
+          this.setState({
+            respType:"fail",
+            respMsg:"Username must be AlphaNumeric"
+          });
+          return;
+        }
         const that =this;
         const { shopOptions, currentShop } = this.state;
-        var form = document.querySelector('#new-user-form');
+
         let password = form.elements['password'].value;
         let username = form.elements['username'].value;
         this.eventLogging("acceptPass",`${password}(${form.elements['emoji-password'].value})`)
@@ -196,6 +235,8 @@ export class CreateAndPracticePage extends React.Component{
             password: password,
             website: currentShop.id
         }
+        console.log(form_data)
+        that.client_events.splice(0,that.client_events.length); //empty list
         const xhr = new XMLHttpRequest();
         xhr.open('POST',`create`);
         xhr.setRequestHeader('Content-Type','application/json')
@@ -204,19 +245,15 @@ export class CreateAndPracticePage extends React.Component{
                 that.setState({
                   practice:true,
                   respType:"success",
-                  respMsg: (shopOptions.length === 1 ?
-                        "This is the final password. When you're finished practicing hit cancel to return to main page":
-                        "Password created. You can practice below."),
+                  respMsg: "Password created. You can practice below.",
                   shopOptions:shopOptions.filter((item)=>item.name!==currentShop.name),
                   userCreated:true,
                 })
-                that.client_events.splice(0,that.client_events.length);
             }else if(xhr.status === 400){
                 that.setState({
                   respType:"fail",
                   respMsg:"That username is already in use"
                 })
-                that.client_events.splice(0,that.client_events.length);
                 that.eventLogging("creation_fail","user-exists")
             }else{
                 that.setState({
@@ -243,6 +280,31 @@ export class CreateAndPracticePage extends React.Component{
             respMsg:""
         });
     }
+    renderStores(){
+      const {currentShop,shopOptions,user,practice,respMsg,respType} = this.state
+      return STORE_CONFIGS.map((store)=>{return(
+        <div className={currentShop.id === store.id ? "" : "hidden"}>
+          <h1 className="brand-title">{store.name}</h1>
+          <h4 className="tag-line">{store.tag_line}</h4>
+          <NewUserForm
+            eventLogging={this.eventLogging.bind(this)}
+            submitAction={this.submitNewUser.bind(this)}
+            username={user}
+            disabled={practice}
+            website={store.id}
+            msg={respMsg}
+            msgType={respType}/>
+          {practice?<PasswordForm
+              path="practice"
+              goal="create"
+              website={store.id}
+              id="password-form"
+              onSuccess={this.onSuccess.bind(this)}
+              successMsg="Successful practice."
+              title="Practice Login"/>:''}
+        </div>)
+      });
+    }
     render(){
         const {practice,respType,respMsg,currentShop,shopOptions,user} = this.state;
         const {exitPage} = this.props;
@@ -262,24 +324,7 @@ export class CreateAndPracticePage extends React.Component{
                     selectStore={this.selectStore.bind(this)}
                     selectedStore={currentShop}
                     availableStores={shopOptions}/>
-                <h1 className="brand-title">{currentShop.name}</h1>
-                <h4 className="tag-line">{currentShop.tag_line}</h4>
-                <NewUserForm
-                  eventLogging={this.eventLogging.bind(this)}
-                  submitAction={this.submitNewUser.bind(this)}
-                  username={user}
-                  disabled={practice}
-                  website={currentShop.id}
-                  msg={respMsg}
-                  msgType={respType}/>
-                {practice?<PasswordForm
-                      path="practice"
-                      goal="create"
-                      website={currentShop.id}
-                      id="password-form"
-                      onSuccess={this.onSuccess.bind(this)}
-                      successMsg="Successful practice."
-                      title="Practice Login"/>:''}
+                {this.renderStores()}
             </div>
         )
     }
@@ -289,40 +334,43 @@ export class LoginPage extends React.Component{
     thank_you_msg = 'We here at team "A Funny Name" would like to thank you for your participation. We appreciate the time you have taken to assist us in our academic pursuits'
     constructor(props){
         super(props)
+        //shuffledList
+        this.shopOptions=STORE_CONFIGS.map((item)=>{return  {sortIndex:Math.random(),value:item.id}}).
+          sort((a,b)=>a.sortIndex - b.sortIndex).
+          map((item)=>item.value);
         this.state={
-            currentShop:STORE_CONFIGS[Math.floor(Math.random() * STORE_CONFIGS.length)],
-            shopOptions:STORE_CONFIGS.slice(0,STORE_CONFIGS.length)
+            currentShop:this.shopOptions.pop()//last element of the random list
         }
     }
     nextWebsite(){
-        const { shopOptions,currentShop } = this.state
-        let remaining_options = shopOptions.filter((item)=> item.id!==currentShop.id);
-        let next_website = remaining_options[Math.floor(Math.random() * remaining_options.length)];
+        const { shopOptions} = this.state
         this.setState({
-            currentShop:next_website,
-            shopOptions:remaining_options
+            currentShop:this.shopOptions.pop()
         })
     }
-    renderShop(shop){
+    renderShops(){
+      return STORE_CONFIGS.map((shop,index)=>{
         return(
-            <div className={"container "+shop.id}>
+            <div className={"container "+shop.id + " " + (shop.id===this.state.currentShop? "" : "hidden")}>
                 <h1 className="brand-title">{shop.name}</h1>
                 <h4 className="tag-line">{shop.tag_line}</h4>
                 <PasswordForm onSuccess={this.nextWebsite.bind(this)}
                     id="password-form"
                     website={shop.id}
+                    successMsg="Success! Moving to next website."
                     goal="login"
                     path="login"
                     title="Login" />
             </div>
         )
+      })
     }
     render(){
-        const {currentShop,shopOptions} = this.state;
-        return( shopOptions.length > 0 ? this.renderShop(currentShop) :
-                <div className="container">
-                    <MessageBox status="success" message={this.thank_you_msg}/>
-                </div>
+        const {currentShop} = this.state;
+        return( this.shopOptions.length > 0 ? this.renderShops() :
+              <div className="container">
+                  <MessageBox status="success" message={this.thank_you_msg}/>
+              </div>
         )
     }
 }

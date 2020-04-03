@@ -134,6 +134,7 @@ export class EmojiKeyboard extends React.Component{
                 <div className="form-cluster">
                     <label htmlFor="#emoji-pass-field">Password</label>
 					<input className="text-input emoji-field"
+						required="true"
 						name="password"
 						type="password"
 						id={id}
