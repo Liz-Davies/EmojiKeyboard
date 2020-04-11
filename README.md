@@ -1,5 +1,7 @@
 # EmojiKeyboard
+* public as of 10:30pm April 10th *
 Team: A Funny Name
+
 Authors: Sarah Elizabeth "Liz" Davies
 
 Note: This is my first React project. My state management and jsx may not always been the cleanest. Have mercy.
