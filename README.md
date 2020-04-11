@@ -1,5 +1,5 @@
 # EmojiKeyboard
-* public as of 10:30pm April 10th *
+*Public as of 10:30pm April 10th*
 
 Team: A Funny Name
 
